@@ -24,13 +24,20 @@ const updateProductController = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedProductFields = req.body;
-        const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductFields, { new: true });
+console.log("Updated Product Fields:", updatedProductFields); // Log the updated fields
+console.log("Product ID:", id); // Log the product ID
+        const updatedProduct = await Product.findOneAndUpdate(
+            { id: id },
+            updatedProductFields,
+            { new: true }
+        );
         if (!updatedProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
         res.json(updatedProduct);
     } catch (error) {
         res.status(500).json({ message: "Error updating product"});
+        console.log(error)
     }
 };
 
@@ -38,7 +45,7 @@ const updateProductController = async (req, res) => {
 const deleteProductController = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedProduct = await Product.findByIdAndDelete(id);
+        const deletedProduct = await Product.findOneAndDelete({ id: id });
         if (!deletedProduct) {
             return res.status(404).json({ message: "Product not found" });
         }
